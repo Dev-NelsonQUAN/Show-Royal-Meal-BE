@@ -1,0 +1,34 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+# package-lock.json (optional, see below)
+
+# Compiled TypeScript output
+dist/
+build/
+
+# Test coverage reports
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Editor and OS files
+.DS_Store
+*.log
+.vscode/*
+!.vscode/settings.json
+
+# Deprecated ESLint ignore file
+.eslintignore
+.eslintignore.bak
+
+# Temporary files
+*.swp
+*.swo
+*.tmp

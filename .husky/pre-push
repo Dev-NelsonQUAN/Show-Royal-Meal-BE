@@ -1,0 +1,6 @@
+cat > .husky/pre-push << 'EOF'
+#!/bin/bash
+. "$(dirname -- "$0")/_/husky.sh"
+npm run lint && npm run format
+EOF
+chmod +x .husky/pre-push
