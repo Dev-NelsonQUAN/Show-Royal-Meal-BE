@@ -5,7 +5,6 @@ yarn-error.log
 # package-lock.json (optional, see below)
 
 # Compiled TypeScript output
-dist/
 build/
 
 # Test coverage reports
