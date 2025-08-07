@@ -13,24 +13,12 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-// ====================================================================
-// Reusable HTML Template & Styling
-// ====================================================================
-
 const brandPrimary = "#CC7722";
 const brandSecondary = "#2C1202";
 const successColor = "#28A745";
 const dangerColor = "#DC3545";
 const lightGrey = "#f4f4f4";
 
-/**
- * Creates a reusable, styled HTML email template.
- * @param title The title for the email header.
- * @param contentHtml The main HTML content of the email.
- * @param buttonText The text for the call-to-action button.
- * @param buttonLink The URL for the button.
- * @param buttonColor The background color for the button.
- */
 const createEmailTemplate = (
   title: string,
   contentHtml: string,
@@ -77,10 +65,6 @@ const createEmailTemplate = (
     </div>
   `;
 };
-
-// ====================================================================
-// Updated Mailer Functions
-// ====================================================================
 
 export const sendOrderMail = async (
   to: string,
@@ -191,67 +175,3 @@ export const welcomeMail = async (to: string, name: string) => {
   };
   await transporter.sendMail(mailOptions);
 };
-
-// import nodemailer from "nodemailer";
-
-// import dotenv from "dotenv";
-
-// dotenv.config();
-
-// export const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: process.env.MAIL_USER,
-//     pass: process.env.MAIL_PASS,
-//   },
-// });
-
-// export const sendOrderMail = async (
-//   to: string,
-//   name: string,
-//   orderId: string
-// ) => {
-//   const mailOptions = {
-//     from: `"Show Royal Meal" <${process.env.MAIL_USER}>`,
-//     to,
-//     subject: "Order Confirmation",
-//     html: `
-//         <h2>Hi ${name},</h2>
-//         <p>We’ve received your order <strong>${orderId}</strong>.</p>
-//          <p>Thank you for shopping with us!</p>
-//         `,
-//   };
-//   await transporter.sendMail(mailOptions);
-// };
-
-// interface MailOptions {
-//   to: string;
-//   subject: string;
-//   html: string;
-// }
-
-// export const orderStatusMail = async ({ to, subject, html }: MailOptions) => {
-//   await transporter.sendMail({
-//     from: `"Mr chris bread company" <${process.env.MAIL_USER}>`,
-//     to,
-//     subject,
-//     html,
-//   });
-// };
-
-// interface EmailOptions {
-//   to: string;
-//   subject: string;
-//   html: string;
-// }
-
-// export const welcomeMail = async ({ to, subject, html }: EmailOptions) => {
-//   await transporter.sendMail({
-//     from: `"Mr Chris bread company" <${process.env.MAIL_USER}>`,
-//     to,
-//     subject,
-//     html,
-//   });
-// };

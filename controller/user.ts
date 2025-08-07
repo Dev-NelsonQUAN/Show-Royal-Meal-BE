@@ -6,7 +6,7 @@ import { welcomeMail } from "../utils/mailer";
 
 export const signUp = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { fullName, email, password, phoneNumber } = req.body;
+    const { fullName, email, password, phoneNumber, role = 'User' } = req.body;
     if (!fullName || !email || !password || !phoneNumber) {
       res.status(400).json({ message: "All fields required" });
       return;
@@ -26,6 +26,7 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
       password: hashPassword,
       email,
       phoneNumber,
+      role,
     });
 
     await welcomeMail(user.email, user.fullName);
