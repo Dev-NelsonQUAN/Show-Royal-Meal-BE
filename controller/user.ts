@@ -3,12 +3,12 @@ import bcrypt from "bcryptjs";
 import User from "../model/userModel";
 import generateToken from "../utils/generate";
 import {
-  sendUserWelcomeMail, // Import the new welcome functions
+  sendUserWelcomeMail,
   sendAdminNotificationMail,
 } from "../utils/mailer";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 export const signUp = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -35,11 +35,7 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
       role,
     });
 
-    // --- Conditional Mailer Logic ---
     if (user.role === "Admin") {
-      // Send a notification email to the admin to confirm a new admin user was created.
-      // You should specify a destination admin email here, or get it from your .env.
-      // It's crucial to have this environment variable set for admin notifications.
       const destinationAdminEmail =
         process.env.ADMIN_EMAIL || "default_admin@example.com";
       await sendAdminNotificationMail(
@@ -47,18 +43,19 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
         user.fullName,
         user.email
       );
-      // Optionally, send a welcome email to the new admin user as well
-      await sendUserWelcomeMail(user.email, user.fullName); // Using the general welcome for now
+      await sendUserWelcomeMail(user.email, user.fullName);
     } else {
-      // Send a welcome email to the new regular user
       await sendUserWelcomeMail(user.email, user.fullName);
     }
-    // --- End Conditional Mailer Logic ---
 
     res.status(201).json({ message: "User created successfully", user });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Signup error:", error);
-    res.status(500).json({ message: "An error occurred", error });
+    let errorMessage = "An internal server error occurred.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    res.status(500).json({ message: errorMessage });
   }
 };
 
@@ -67,23 +64,114 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "User not found. Please signup" });
+      res.status(401).json({ message: "Invalid credentials" });
       return;
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      res.status(400).json({ message: "Incorrect Password" });
+      res.status(401).json({ message: "Invalid credentials" });
       return;
     }
 
     const token = generateToken(String(user._id), String(user.role));
 
     res.status(200).json({ message: "Login Successful", user, token });
-  } catch (error) {
-    console.error("Login error:", error); // Added for better debugging
-    res.status(500).json({ message: "An error occurred", error });
+  } catch (error: unknown) {
+    console.error("Login error:", error);
+    let errorMessage = "An internal server error occurred.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    res.status(500).json({ message: errorMessage });
   }
 };
+
+// import { Request, Response } from "express";
+// import bcrypt from "bcryptjs";
+// import User from "../model/userModel";
+// import generateToken from "../utils/generate";
+// import {
+//   sendUserWelcomeMail, // Import the new welcome functions
+//   sendAdminNotificationMail,
+// } from "../utils/mailer";
+// import dotenv from "dotenv";
+
+// dotenv.config(); // Load environment variables
+
+// export const signUp = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const { fullName, email, password, phoneNumber, role = "User" } = req.body;
+//     if (!fullName || !email || !password || !phoneNumber) {
+//       res.status(400).json({ message: "All fields required" });
+//       return;
+//     }
+//     const existingUser = await User.findOne({
+//       $or: [{ email }, { phoneNumber }],
+//     });
+//     if (existingUser) {
+//       const conflictField =
+//         existingUser.email === email ? "Email" : "Phone number";
+//       res.status(409).json({ message: `${conflictField} already exists` });
+//       return;
+//     }
+//     const hashPassword = await bcrypt.hash(password, 10);
+//     const user = await User.create({
+//       fullName,
+//       password: hashPassword,
+//       email,
+//       phoneNumber,
+//       role,
+//     });
+
+//     // --- Conditional Mailer Logic ---
+//     if (user.role === "Admin") {
+//       // Send a notification email to the admin to confirm a new admin user was created.
+//       // You should specify a destination admin email here, or get it from your .env.
+//       // It's crucial to have this environment variable set for admin notifications.
+//       const destinationAdminEmail =
+//         process.env.ADMIN_EMAIL || "default_admin@example.com";
+//       await sendAdminNotificationMail(
+//         destinationAdminEmail,
+//         user.fullName,
+//         user.email
+//       );
+//       // Optionally, send a welcome email to the new admin user as well
+//       await sendUserWelcomeMail(user.email, user.fullName); // Using the general welcome for now
+//     } else {
+//       // Send a welcome email to the new regular user
+//       await sendUserWelcomeMail(user.email, user.fullName);
+//     }
+//     // --- End Conditional Mailer Logic ---
+
+//     res.status(201).json({ message: "User created successfully", user });
+//   } catch (error) {
+//     console.error("Signup error:", error);
+//     res.status(500).json({ message: "An error occurred", error });
+//   }
+// };
+
+// export const login = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       res.status(400).json({ message: "User not found. Please signup" });
+//       return;
+//     }
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       res.status(400).json({ message: "Incorrect Password" });
+//       return;
+//     }
+
+//     const token = generateToken(String(user._id), String(user.role));
+
+//     res.status(200).json({ message: "Login Successful", user, token });
+//   } catch (error) {
+//     console.error("Login error:", error); // Added for better debugging
+//     res.status(500).json({ message: "An error occurred", error });
+//   }
+// };
 
 // import { Request, Response } from "express";
 // import bcrypt from "bcryptjs";
