@@ -2,7 +2,13 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../model/userModel";
 import generateToken from "../utils/generate";
-import { welcomeMail } from "../utils/mailer";
+import {
+  sendUserWelcomeMail, // Import the new welcome functions
+  sendAdminNotificationMail,
+} from "../utils/mailer";
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables
 
 export const signUp = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -29,7 +35,25 @@ export const signUp = async (req: Request, res: Response): Promise<void> => {
       role,
     });
 
-    await welcomeMail(user.email, user.fullName);
+    // --- Conditional Mailer Logic ---
+    if (user.role === "Admin") {
+      // Send a notification email to the admin to confirm a new admin user was created.
+      // You should specify a destination admin email here, or get it from your .env.
+      // It's crucial to have this environment variable set for admin notifications.
+      const destinationAdminEmail =
+        process.env.ADMIN_EMAIL || "default_admin@example.com";
+      await sendAdminNotificationMail(
+        destinationAdminEmail,
+        user.fullName,
+        user.email
+      );
+      // Optionally, send a welcome email to the new admin user as well
+      await sendUserWelcomeMail(user.email, user.fullName); // Using the general welcome for now
+    } else {
+      // Send a welcome email to the new regular user
+      await sendUserWelcomeMail(user.email, user.fullName);
+    }
+    // --- End Conditional Mailer Logic ---
 
     res.status(201).json({ message: "User created successfully", user });
   } catch (error) {
@@ -69,7 +93,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 // export const signUp = async (req: Request, res: Response): Promise<void> => {
 //   try {
-//     const { fullName, email, password, phoneNumber } = req.body;
+//     const { fullName, email, password, phoneNumber, role = "User" } = req.body;
 //     if (!fullName || !email || !password || !phoneNumber) {
 //       res.status(400).json({ message: "All fields required" });
 //       return;
@@ -89,17 +113,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 //       password: hashPassword,
 //       email,
 //       phoneNumber,
+//       role,
 //     });
-//     await welcomeMail({
-//       to: user.email,
-//       subject: "Welcome to Show Royal Meal",
-//       html: `
-//       <h3>Hello ${fullName},</h3>
-//       <p>Welcome to Show Royal! We're are excited to have you with us.</p>
-//       `,
-//     });
+
+//     await welcomeMail(user.email, user.fullName);
+
 //     res.status(201).json({ message: "User created successfully", user });
 //   } catch (error) {
+//     console.error("Signup error:", error);
 //     res.status(500).json({ message: "An error occurred", error });
 //   }
 // };
@@ -122,6 +143,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 //     res.status(200).json({ message: "Login Successful", user, token });
 //   } catch (error) {
+//     console.error("Login error:", error); // Added for better debugging
 //     res.status(500).json({ message: "An error occurred", error });
 //   }
 // };
