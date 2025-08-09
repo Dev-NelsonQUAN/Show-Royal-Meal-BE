@@ -6,6 +6,7 @@ import connectDb from "./config/configDb";
 import userRouter from "./routes/userRoute";
 import productRouter from "./routes/productRoute";
 import orderRouter from "./routes/orderRoute";
+import adminRouter from "./routes/adminRoute";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const port = process.env.PORT || 4056;
 app.use(express.json());
 app.use(cors());
 app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/product", productRouter);
 app.use("/api/order", orderRouter);
 app.use(morgan("dev"));
