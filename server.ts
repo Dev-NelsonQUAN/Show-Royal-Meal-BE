@@ -13,13 +13,14 @@ dotenv.config();
 const app: Application = express();
 const port = process.env.PORT || 4056;
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+app.use(morgan("dev"));
+
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/product", productRouter);
 app.use("/api/order", orderRouter);
-app.use(morgan("dev"));
 
 connectDb();
 
