@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import User from "../model/userModel";
 import dotenv from "dotenv";
-import Order from "../model/orderModel"; // You will need to import your Order model
+import Order from "../model/orderModel";
+import WaitlistEntry from "../model/waitlistModel"; // Make sure you have this model from the previous step
 
 dotenv.config();
 
@@ -98,6 +99,29 @@ export const getDashboardStats = async (
     });
   } catch (error: unknown) {
     let errorMessage = "An internal server error occurred fetching stats.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    res.status(500).json({ message: errorMessage });
+  }
+};
+
+export const getWaitlistEntries = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // Fetch all entries and sort by the newest first
+    const waitlist = await WaitlistEntry.find({})
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Send back the data in a format the frontend expects
+    res
+      .status(200)
+      .json({ message: "Waitlist fetched successfully", waitlist });
+  } catch (error: unknown) {
+    let errorMessage = "An internal server error occurred.";
     if (error instanceof Error) {
       errorMessage = error.message;
     }
