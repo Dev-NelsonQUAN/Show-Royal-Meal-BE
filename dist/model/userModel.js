@@ -61,6 +61,7 @@ const userSchema = new mongoose_1.Schema({
         enum: ["User", "Admin"],
         default: "User",
     },
+    avatar: { type: String },
 }, { timestamps: true });
 const User = mongoose_1.default.model("User", userSchema);
 exports.default = User;

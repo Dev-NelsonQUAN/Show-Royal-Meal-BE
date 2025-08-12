@@ -68,6 +68,10 @@ const orderSchema = new mongoose_1.Schema({
         type: Number,
         required: true,
     },
+    date: { type: Date, default: Date.now },
+    notes: { type: String },
+}, {
+    timestamps: true,
 });
 orderSchema.plugin(AutoIncrement, {
     inc_field: "orderId",

@@ -11,8 +11,6 @@ export const getAllUsers = async (
   res: Response
 ): Promise<void> => {
   try {
-    // THE FIX: Add { role: "User" } to the find query.
-    // This tells Mongoose to only find documents where the role is "User".
     const users = await User.find({ role: "User" }).select("-password").lean();
 
     res.status(200).json({ message: "All users fetched successfully", users });
@@ -24,8 +22,6 @@ export const getAllUsers = async (
     res.status(500).json({ message: errorMessage });
   }
 };
-
-// In a new file like src/controllers/adminController.ts
 
 export const getRecentActivity = async (
   req: Request,
