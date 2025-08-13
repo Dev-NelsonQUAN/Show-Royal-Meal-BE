@@ -13,4 +13,5 @@ productRouter.put("/update-product/:id", authMiddleware_1.protect, authMiddlewar
 productRouter.post("/delete-product", authMiddleware_1.protect, authMiddleware_1.admin, product_1.deleteMultipleProduct);
 productRouter.get("/one-product/:id", product_1.getOneProduct);
 productRouter.get("/all-product", product_1.getAllProduct);
+// productRouter.get("/get-products", getAllProduct)
 exports.default = productRouter;

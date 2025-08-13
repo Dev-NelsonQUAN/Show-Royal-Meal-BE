@@ -28,4 +28,6 @@ productRouter.put(
 productRouter.post("/delete-product", protect, admin, deleteMultipleProduct);
 productRouter.get("/one-product/:id", getOneProduct);
 productRouter.get("/all-product", getAllProduct);
+// productRouter.get("/get-products", getAllProduct)
+
 export default productRouter;

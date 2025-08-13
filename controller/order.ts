@@ -36,15 +36,19 @@ export const createOrder = async (
         res.status(400).json({ message: "Quantity must be one or more" });
         return;
       }
-      if (product.stock < item.qty) {
-        res.status(400).json({
-          message: `Insufficient stock for : ${product.productName || item.productId}`,
-        });
-      } else {
-        totalAmount += product.price * item.qty;
-        product.stock -= item.qty;
-        await product.save();
-      }
+
+      totalAmount += product.price * item.qty;
+      // product.stock -= item.qty;
+      await product.save();
+      // if (product.stock < item.qty) {
+      //   res.status(400).json({
+      //     message: `Insufficient stock for : ${product.productName || item.productId}`,
+      //   });
+      // } else {
+      //   totalAmount += product.price * item.qty;
+      //   // product.stock -= item.qty;
+      //   await product.save();
+      // }
     }
     const order = new Order({
       user: req.user!._id,

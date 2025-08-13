@@ -4,6 +4,7 @@ import {
   getDashboardStats,
   getRecentActivity,
   getWaitlistEntries,
+  sendEmailToWaitlist,
 } from "../controller/admin";
 import { login } from "../controller/user";
 
@@ -14,5 +15,7 @@ adminRouter.get("/users", getAllUsers);
 adminRouter.get("/activity", getRecentActivity);
 adminRouter.get("/stats", getDashboardStats);
 adminRouter.get("/waitlist", getWaitlistEntries);
+adminRouter.post("/waitlist/send", sendEmailToWaitlist);
+// adminRouter.post("/waitlist/send", protect, admin, sendEmailToWaitlist);
 
 export default adminRouter;

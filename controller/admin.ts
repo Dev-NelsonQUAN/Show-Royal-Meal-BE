@@ -3,6 +3,7 @@ import User from "../model/userModel";
 import dotenv from "dotenv";
 import Order from "../model/orderModel";
 import WaitlistEntry from "../model/waitlistModel"; // Make sure you have this model from the previous step
+import { sendBulkWaitlistEmail } from "../utils/mailer"; // Import the new mailer function
 
 dotenv.config();
 
@@ -116,6 +117,43 @@ export const getWaitlistEntries = async (
     res
       .status(200)
       .json({ message: "Waitlist fetched successfully", waitlist });
+  } catch (error: unknown) {
+    let errorMessage = "An internal server error occurred.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    res.status(500).json({ message: errorMessage });
+  }
+};
+
+export const sendEmailToWaitlist = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { subject, message } = req.body;
+
+    if (!subject || !message) {
+      res.status(400).json({ message: "Subject and message are required." });
+      return;
+    }
+
+    // 1. Get all emails from the waitlist
+    const waitlistEntries = await WaitlistEntry.find({}).select("email").lean();
+    const recipientEmails = waitlistEntries.map((entry) => entry.email);
+
+    if (recipientEmails.length === 0) {
+      res.status(404).json({ message: "No users found on the waitlist." });
+      return;
+    }
+
+    // 2. Send the emails (don't wait for it to finish)
+    sendBulkWaitlistEmail(recipientEmails, subject, message);
+
+    // 3. Immediately respond to the admin so they don't have to wait
+    res.status(200).json({
+      message: `Email campaign started. It will be sent to ${recipientEmails.length} recipients in the background.`,
+    });
   } catch (error: unknown) {
     let errorMessage = "An internal server error occurred.";
     if (error instanceof Error) {

@@ -7,7 +7,12 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { productName, description, price, stock } = req.body;
+    const {
+      productName,
+      description,
+      price,
+      // stock
+    } = req.body;
     const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) {
       res
@@ -21,7 +26,7 @@ export const createProduct = async (
       productName,
       description,
       price,
-      stock,
+      // stock,
       image: imagePaths,
     });
     res.status(201).json({ message: "Product created successfully", product });
@@ -39,7 +44,12 @@ export const updateProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { productName, description, price, stock } = req.body;
+    const {
+      productName,
+      description,
+      price,
+      // stock
+    } = req.body;
     const product = await Product.findById(req.params.id);
     if (!product) {
       res.status(404).json({ message: "Product not found" });
@@ -48,7 +58,7 @@ export const updateProduct = async (
     product.productName = productName || product.productName;
     product.description = description || product.description;
     product.price = price || product.price;
-    product.stock = stock || product.stock;
+    // product.stock = stock || product.stock;
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const imagePaths = req.files.map(
         (file: Express.Multer.File) => file.path
