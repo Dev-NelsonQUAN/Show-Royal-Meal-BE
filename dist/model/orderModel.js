@@ -68,6 +68,11 @@ const orderSchema = new mongoose_1.Schema({
         type: Number,
         required: true,
     },
+    pickUpDate: {
+        type: String,
+        required: true,
+        enum: ["Morning", "Afternoon"]
+    },
     date: { type: Date, default: Date.now },
     notes: { type: String },
 }, {
