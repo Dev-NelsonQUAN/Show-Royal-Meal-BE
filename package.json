@@ -8,7 +8,9 @@
     "prepare": "husky",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "dev": "tsc && nodemon --exec ts-node server.ts"
+    "build": "rimraf ./dist && tsc",
+    "start": "npm run build && node dist/server.js",
+    "dev": "nodemon --exec ts-node server.ts"
   },
   "repository": {
     "type": "git",

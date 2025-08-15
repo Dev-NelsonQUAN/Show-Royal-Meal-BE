@@ -10,7 +10,7 @@ const userModel_1 = __importDefault(require("../model/userModel"));
 const mailer_1 = require("../utils/mailer");
 const createOrder = async (req, res) => {
     try {
-        const { items, pickUpDate } = req.body;
+        const { items, pickUpDate, notes } = req.body;
         if (!items || items.length === 0) {
             res.status(400).json({ message: "No order items" });
             return;
@@ -44,7 +44,9 @@ const createOrder = async (req, res) => {
         const order = new orderModel_1.default({
             user: req.user._id,
             items,
+            pickUpDate,
             totalAmount,
+            notes,
         });
         const createOrder = await order.save();
         const user = await userModel_1.default.findById(req.user?._id);
