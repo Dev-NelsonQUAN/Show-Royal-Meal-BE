@@ -10,7 +10,7 @@ const userModel_1 = __importDefault(require("../model/userModel"));
 const mailer_1 = require("../utils/mailer");
 const createOrder = async (req, res) => {
     try {
-        const { items } = req.body;
+        const { items, pickUpDate } = req.body;
         if (!items || items.length === 0) {
             res.status(400).json({ message: "No order items" });
             return;

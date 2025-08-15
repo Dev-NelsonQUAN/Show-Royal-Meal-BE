@@ -12,6 +12,7 @@ export interface IOrder extends Document {
   }[];
   status: string;
   totalAmount: number;
+  pickUpDate: string;
   date: Date;
   notes?: string;
   createdAt: Date;
@@ -50,6 +51,11 @@ const orderSchema = new Schema<IOrder>(
     totalAmount: {
       type: Number,
       required: true,
+    },
+    pickUpDate: {
+      type: String,
+      required: true,
+      enum: ["Morning", "Afternoon"],
     },
     date: { type: Date, default: Date.now },
     notes: { type: String },
