@@ -18,7 +18,7 @@ export const createOrder = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { items, pickUpDate } = req.body;
+    const { items, pickUpDate, notes } = req.body;
     if (!items || items.length === 0) {
       res.status(400).json({ message: "No order items" });
       return;
@@ -55,6 +55,7 @@ export const createOrder = async (
       items,
       pickUpDate,
       totalAmount,
+      notes,
     });
     const createOrder = await order.save();
     const user = await User.findById(req.user?._id);
