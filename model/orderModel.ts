@@ -72,5 +72,3 @@ orderSchema.plugin(AutoIncrement, {
 
 const Order = mongoose.model<IOrder>("Order", orderSchema);
 export default Order;
-
-// "dev": "tsc && nodemon --exec ts-node server.ts"
