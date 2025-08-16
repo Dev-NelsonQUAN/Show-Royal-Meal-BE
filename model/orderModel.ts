@@ -22,7 +22,7 @@ export interface IOrder extends Document {
   pickUpDate: string;
   date: Date;
   notes?: string;
-  payment: IPayment; // <-- ADD THIS LINE
+  payment: IPayment;
   createdAt: Date;
   updatedAt: Date;
 }
