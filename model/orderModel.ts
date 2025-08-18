@@ -78,7 +78,6 @@ const orderSchema = new Schema<IOrder>(
         },
       },
     ],
-    // --- ADD THE PAYMENT FIELD TO THE MAIN SCHEMA ---
     payment: {
       type: paymentSchema,
       required: [true, "Payment information is missing."],
