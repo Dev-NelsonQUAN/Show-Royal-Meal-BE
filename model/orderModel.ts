@@ -3,10 +3,9 @@ import mongoose, { Document, Schema } from "mongoose";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 
-// --- NEW: Interface for the nested payment object ---
 interface IPayment {
   method: "Payment" | "Credit";
-  detail?: "Cash" | "Card" | "Bank Transfer"; // Optional because it's not needed for 'Credit'
+  detail?: "Cash" | "Card" | "Bank Transfer";
   status: "Paid" | "Unpaid";
 }
 
@@ -27,7 +26,6 @@ export interface IOrder extends Document {
   updatedAt: Date;
 }
 
-// --- NEW: Schema for the nested payment object ---
 const paymentSchema = new Schema<IPayment>(
   {
     method: {
@@ -38,7 +36,6 @@ const paymentSchema = new Schema<IPayment>(
     detail: {
       type: String,
       enum: ["Cash", "Card", "Bank Transfer"],
-      // Conditionally required: 'detail' is mandatory ONLY if 'method' is 'Payment'
       required: function (this: IPayment) {
         return this.method === "Payment";
       },
