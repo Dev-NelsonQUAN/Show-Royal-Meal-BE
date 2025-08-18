@@ -5,19 +5,19 @@ import Order from "../model/orderModel";
 import User, { IUser } from "../model/userModel";
 import { orderStatusMail, sendOrderMail } from "../utils/mailer";
 
-// This is a more modern way to extend the Express Request type
 declare module "express-serve-static-core" {
   interface Request {
     user?: IUser;
   }
 }
 
-// createOrder function remains correct. No changes needed.
 export const createOrder = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
+    console.log("RECEIVED REQUEST BODY:", JSON.stringify(req.body, null, 2));
+
     const { items, pickUpDate, notes, payment } = req.body;
 
     if (!items || items.length === 0) {
