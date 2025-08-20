@@ -7,6 +7,7 @@ import {
   sendAdminNotificationMail,
 } from "../utils/mailer";
 import dotenv from "dotenv";
+import WaitListEntry from "../model/waitlistModel";
 
 dotenv.config();
 
@@ -77,6 +78,49 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
     const token = generateToken(String(user._id), String(user.role));
     res.status(200).json({ message: "Login Successful", user, token });
+  } catch (error: unknown) {
+    let errorMessage = "An internal server error occurred.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    res.status(500).json({ message: errorMessage });
+  }
+};
+
+export const signUpWaitlist = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { fullName, email, phoneNo } = req.body;
+
+    if (!fullName || !email || !phoneNo) {
+      res.status(400).json({ message: "All fields are required" });
+      return;
+    }
+
+    const checkExistingUser = await WaitListEntry.findOne({
+      $or: [{ email }, { phoneNo }],
+    });
+    if (checkExistingUser) {
+      const conflictField =
+        checkExistingUser.email === email ? "Email" : "Phone number";
+      res.status(409).json({ message: `${conflictField} already exists` });
+      return;
+    }
+
+    const waitlistPayload = {
+      fullName,
+      email,
+      phoneNo,
+    };
+
+    const waitlistUser = await WaitListEntry.create(waitlistPayload);
+
+    res.status(201).json({
+      message: "Successfully registered for the waitlist",
+      waitlistUser,
+    });
   } catch (error: unknown) {
     let errorMessage = "An internal server error occurred.";
     if (error instanceof Error) {

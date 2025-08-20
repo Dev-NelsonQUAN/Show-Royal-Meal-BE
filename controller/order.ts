@@ -16,7 +16,7 @@ export const createOrder = async (
   res: Response
 ): Promise<void> => {
   try {
-    console.log("RECEIVED REQUEST BODY:", JSON.stringify(req.body, null, 2));
+    // console.log("RECEIVED REQUEST BODY:", JSON.stringify(req.body, null, 2));
 
     const { items, pickUpDate, notes, payment } = req.body;
 
