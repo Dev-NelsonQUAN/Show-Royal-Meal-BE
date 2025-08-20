@@ -3,6 +3,7 @@ import { Schema, model, Document } from "mongoose";
 export interface IWailistEntry extends Document {
   fullName: string;
   email: string;
+  phoneNo: string;
   createdAt: string;
 }
 
@@ -16,6 +17,7 @@ const waitListSchema = new Schema<IWailistEntry>(
       lowercase: true,
       trim: true,
     },
+    phoneNo: { type: String, required: true, unique: true, trim: true },
   },
   {
     timestamps: true,
