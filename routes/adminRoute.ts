@@ -15,6 +15,7 @@ adminRouter.get("/users", getAllUsers);
 adminRouter.get("/activity", getRecentActivity);
 adminRouter.get("/stats", getDashboardStats);
 adminRouter.get("/waitlist", getWaitlistEntries);
+// adminRouter.delete("/")
 adminRouter.post("/waitlist/send", sendEmailToWaitlist);
 // adminRouter.post("/waitlist/send", protect, admin, sendEmailToWaitlist);
 
