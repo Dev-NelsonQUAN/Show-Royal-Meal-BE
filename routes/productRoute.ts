@@ -25,7 +25,7 @@ productRouter.put(
   upload.array("image", 5),
   updateProduct
 );
-productRouter.delete("/delete-product", protect, admin, deleteMultipleProduct);
+productRouter.post("/delete-product", protect, admin, deleteMultipleProduct);
 productRouter.get("/one-product/:id", getOneProduct);
 productRouter.get("/all-product", getAllProduct);
 
