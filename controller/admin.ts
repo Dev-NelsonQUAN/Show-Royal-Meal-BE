@@ -2,10 +2,22 @@ import { Request, Response } from "express";
 import User from "../model/userModel";
 import dotenv from "dotenv";
 import Order from "../model/orderModel";
-import WaitlistEntry from "../model/waitlistModel"; // Make sure you have this model from the previous step
-import { sendBulkWaitlistEmail } from "../utils/mailer"; // Import the new mailer function
+import WaitlistEntry from "../model/waitlistModel";
+import { sendBulkWaitlistEmail } from "../utils/mailer";
+import { IUser } from "../model/userModel";
 
 dotenv.config();
+
+interface AuthRequest extends Request {
+  user?: IUser;
+}
+
+export const verifyAdminToken = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  res.status(200).json({ user: req.user });
+};
 
 export const getAllUsers = async (
   req: Request,
@@ -54,7 +66,6 @@ export const getRecentActivity = async (
       timestamp: order.date,
     }));
 
-    // 4. Combine, sort by date, and take the latest few
     const allActivities = [...userActivities, ...orderActivities]
       .sort(
         (a, b) =>
